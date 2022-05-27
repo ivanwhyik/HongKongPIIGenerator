@@ -12,10 +12,10 @@ relationship = ['Father', 'Husband', 'Mother', 'Partner', 'Wife']
 
 def downloadData(url, downloadFileName):
     
-    #delete existing file
+    #Delete Existing File
     os.remove(downloadFileName)
 
-    #get building
+    #Download XML
     res = requests.get(url)
     with open(downloadFileName, 'wb') as ff:
         ff.write(res.content)
@@ -40,7 +40,7 @@ def parseBuildingStreetXML():
             pass
 
 def getFloor():
-    return "Flat " + chr(ord("A") + random.randint(0, 7)) + " " +  str(random.randint(1, 40)) + "/F"
+    return "Flat " + random.choice("ABCDEFG") + " " +  str(random.randint(1, 40)) + "/F"
 
 def getFirstName():
     x = random.randint(0,10)
@@ -62,7 +62,7 @@ def getHKID():
     for i in range(1, 7):
         s += str(hkid[i])
 
-    #check digit
+    #check digit (incorrect)
     for i in range(0,7):
         hkid[7] += hkid[i] * (8-i)
     hkid[7] = hkid[7] % 11
@@ -77,8 +77,6 @@ def getDoB():
     return datetime.datetime(random.randint(1930,2021), random.randint(1,12), random.randint(1,28)).strftime('%m/%d/%Y')
     
 def main():
-    id = 0
-
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", "--number", help="Number of Record", required=True, type=int)
     parser.add_argument("-u", "--update", help="Update data", action='store_true')
@@ -95,8 +93,7 @@ def main():
         writer = csv.writer(f)
         writer.writerow(header)
 
-
-        #get building
+        #update building from data.gov.hk
         if update:
             downloadData('https://www.rvd.gov.hk/datagovhk/bnb-u.xml', './sourceData/building.xml')
             print ("[+] Building data updated")
@@ -105,12 +102,14 @@ def main():
         
         #write to csv
         progress = 0.1
+        id = 0
         for i in range(0,n):
             id += 1
 
             row = [id, getFirstName(), random.choice(lastName), random.choice(gender), getHKID(), getDoB(), getFloor(), random.choice(building), random.choice(street), getPhoneNumber(), getFirstName(), random.choice(lastName), getPhoneNumber(), random.choice(relationship)]
             writer.writerow(row)
 
+            # print progress every 10%
             if (id == int(n * progress)):
                 print(" [+] Progress: " + str(int(100 * progress)) + "%")
                 progress += 0.1
