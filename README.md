@@ -1,5 +1,7 @@
 # HongKongPIIGenerator
 Create Dummy PII CSV file for Exfiltration Testing
+Types of file:
+- Name, HKID, Date of Birth, Address, Phone Number 
 
 # Usage
 `python HongKongPIIGenerator.py -n <number of records>`
@@ -14,3 +16,4 @@ Update building and street list
   
 # To-do
 HKID check digit
+Credit Card Number
